@@ -1,5 +1,5 @@
 const readInputList = function(action) {
-  if (settings[action.inputListName].trim() === '') {
+  if (!settings[action.inputListName] || settings[action.inputListName].trim() === '') {
     return;
   }
   settings[action.inputListName].split('|').forEach(pair => {
