@@ -1,6 +1,6 @@
 {
   "name": "Auto localize Crowdin links",
-  "about_url": "https://github.com/KhanovaSkola/discourse-crowdin-link",
+  "about_url": "https://github.com/KhanovaSkola/discourse-crowdin-link/blob/master/README.md",
   "license_url": "https://github.com/KhanovaSkola/discourse-crowdin-link/blob/master/LICENSE",
   "component": true
 }
