@@ -50,12 +50,12 @@ export default {
   
       let activateComponent = function(crowdinCode) {
         //NOTE(danielhollas): This regex is wrapped in word boundary chars later
-        let crowdinUrlRegex = '/(http[s]?:\/\/[^/]+\/translate\/khanacademy\/[^/]+)\/enus-XX(.*)/';
-        let localizedCrowdinUrl = '$1/enus-' + crowdinCode + '$2';
+        const crowdinUrlRegex = '/(http[s]?:\/\/[^/]+\/translate\/khanacademy\/[^/]+)\/enus-XX(.*)/';
+        const localizedCrowdinUrl = '$1/enus-' + crowdinCode + '$2';
 
-        let localizeCrowdinLinks = new Action('dummy_string', createLocalizedLink);
+        const localizeCrowdinLinks = new Action('dummy_string', createLocalizedLink);
         localizeCrowdinLinks.inputs[crowdinUrlRegex] = localizedCrowdinUrl;
-        let actions = [localizeCrowdinLinks];
+        const actions = [localizeCrowdinLinks];
         
         api.decorateCooked($elem => {
           actions.forEach(a => {
@@ -63,18 +63,25 @@ export default {
               modifyNode($elem[0], a, skipTags)
             }
           });
+        }, {'id': "autolocalize-crowdin-links"});
+
+        // Apply autolinkify to posts that were cooked
+        // before we registered this callback
+        $(".cooked").each(function(){
+          modifyNode(this, localizeCrowdinLinks, skipTags)
         });
       };
 
-      let currentUser = api.getCurrentUser();
+      const currentUser = api.getCurrentUser();
       if (currentUser) {
         api.container.lookup('store:main').find('user', currentUser.username).then((user) => {
           if (!user.user_fields) {
             return;
           }
-          let userFieldId = 1;
-          let userLang = user.user_fields[userFieldId];
-          let crowdinCode = getCrowdinLangCode(userLang);
+          // This const is specific for https://international-forum.khanacademy.org/
+          const LANGUAGE_USER_FIELD_ID = 1;
+          const userLang = user.user_fields[LANGUAGE_USER_FIELD_ID];
+          const crowdinCode = getCrowdinLangCode(userLang);
           if (crowdinCode) {
             activateComponent(crowdinCode);
           }

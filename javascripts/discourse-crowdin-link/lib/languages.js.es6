@@ -1,4 +1,9 @@
 const langToCrowdinCode = {
+  // We're using fuzzy names so that if a translator
+  // makes a typo or uses a different language name,
+  // we can still catch it. 
+  // In other words, we match the root of each language name
+  // Some langs can also be specified differently, e.g. european portuguese
   'afrikaans': 'af',
   'alban': 'sq',
   'sign': 'sgn',
