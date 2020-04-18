@@ -50,7 +50,7 @@ export default {
   
       let activateComponent = function(crowdinCode) {
         //NOTE(danielhollas): This regex is wrapped in word boundary chars later
-        const crowdinUrlRegex = '/(http[s]?:\/\/[^/]+\/translate\/khanacademy\/[^/]+)\/enus-XX(.*)/';
+        const crowdinUrlRegex = '/(http[s]?:\/\/[^/]+\/translate\/khanacademy\/[^/]+)\/enus-XX(.*)/i';
         const localizedCrowdinUrl = '$1/enus-' + crowdinCode + '$2';
 
         const localizeCrowdinLinks = new Action('dummy_string', createLocalizedLink);
