@@ -42,25 +42,41 @@ export default {
         return link;
       };
 
-      let Action = function(inputListName, method) {
+      let Action = function(inputListName, action, action2) {
         this.inputListName = inputListName;
-        this.createNode = method;
+        this.createNode = action;
+        this.replaceLink = action2;
         this.inputs = {};
       };
   
       let activateComponent = function(crowdinCode) {
+        const crowdinUrlRegex = /(http[s]?:\/\/[^/]+\/translate\/khanacademy\/[^/]+)\/enus-XX(.*)/i;
         //NOTE(danielhollas): This regex is wrapped in word boundary chars later
-        const crowdinUrlRegex = '/(http[s]?:\/\/[^/]+\/translate\/khanacademy\/[^/]+)\/enus-XX(.*)/i';
+        const crowdinUrlRegexString = '/(http[s]?:\/\/[^/]+\/translate\/khanacademy\/[^/]+)\/enus-XX(.*)/i';
         const localizedCrowdinUrl = '$1/enus-' + crowdinCode + '$2';
 
-        const localizeCrowdinLinks = new Action('dummy_string', createLocalizedLink);
-        localizeCrowdinLinks.inputs[crowdinUrlRegex] = localizedCrowdinUrl;
+        let replaceLink = function(node) {
+          if (node.nodeName.toLowerCase() !== 'a') {
+            return;
+          }
+          if (node.href.match(crowdinUrlRegex)) {
+            node.href = node.href.replace(crowdinUrlRegex, localizedCrowdinUrl);
+            node.innerHTML = node.href;
+            node.rel = "nofollow";
+            link.target = '_blank';
+            node.className = 'crowdin-link no-track-link'
+          }
+        }
+
+        const localizeCrowdinLinks = 
+            new Action('dummy_string', createLocalizedLink, replaceLink);
+        localizeCrowdinLinks.inputs[crowdinUrlRegexString] = localizedCrowdinUrl;
         const actions = [localizeCrowdinLinks];
         
         api.decorateCooked($elem => {
-          actions.forEach(a => {
-            if (Object.keys(a.inputs).length > 0) {
-              modifyNode($elem[0], a, skipTags)
+          actions.forEach(action => {
+            if (Object.keys(action.inputs).length > 0) {
+              modifyNode($elem[0], action, skipTags)
             }
           });
         }, {'id': "autolocalize-crowdin-links"});

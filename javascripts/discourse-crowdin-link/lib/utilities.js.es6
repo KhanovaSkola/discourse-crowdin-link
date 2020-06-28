@@ -132,7 +132,10 @@ const modifyNode = function(elem, action, skipTags) {
     let child = elem.childNodes[i];
     if (child.nodeType === 1) {
       let tag = child.nodeName.toLowerCase();
-      if (!(tag in skipTags)) {
+      if (tag === 'a') {
+        action.replaceLink(child);
+      }
+      else if (!(tag in skipTags)) {
         modifyNode(child, action, skipTags);
       }
     } else if (child.nodeType === 3) {
