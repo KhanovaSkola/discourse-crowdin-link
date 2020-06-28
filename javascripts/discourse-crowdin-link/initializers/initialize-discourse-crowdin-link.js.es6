@@ -86,6 +86,17 @@ export default {
         $(".cooked").each(function(){
           modifyNode(this, localizeCrowdinLinks, skipTags)
         });
+        
+        $('a').each(function() {
+          let node = this;
+          if (node.href.match(crowdinUrlRegex)) {
+            node.href = node.href.replace(crowdinUrlRegex, localizedCrowdinUrl);
+            node.innerHTML = node.href;
+            node.rel = "nofollow";
+            link.target = '_blank';
+            node.className = 'crowdin-link no-track-link'
+          }
+        });
       };
 
       const currentUser = api.getCurrentUser();
